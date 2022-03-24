@@ -9,7 +9,6 @@ const expressHandlebars = require('express-handlebars');
 const helmet = require('helmet');
 const session = require('express-session');
 const RedisStore = require('connect-redis')(session);
-const url = require('url');
 const redis = require('redis');
 const csrf = require('csurf');
 
@@ -25,12 +24,12 @@ mongoose.connect(dbURI, (err) => {
   }
 });
 
-const redisURL = process.env.REDISCLOUD_URL ||
-  'redis://default:LtTWL5rxo7i8ti0ydcCOu4LWyLg0fSZ8@redis-12636.c89.us-east-1-3.ec2.cloud.redislabs.com:12636';
+const redisURL = process.env.REDISCLOUD_URL
+  || 'redis://default:LtTWL5rxo7i8ti0ydcCOu4LWyLg0fSZ8@redis-12636.c89.us-east-1-3.ec2.cloud.redislabs.com:12636';
 
-let redisClient = redis.createClient({
+const redisClient = redis.createClient({
   legacyMode: true,
-  url: redisURL
+  url: redisURL,
 });
 
 redisClient.connect().catch(console.error);
@@ -47,14 +46,14 @@ app.use(bodyParser.json());
 app.use(session({
   key: 'sessionid',
   store: new RedisStore({
-    client: redisClient
+    client: redisClient,
   }),
   secret: 'Domo Arigato',
   resave: true,
   saveUninitialized: true,
   cookie: {
-    httpeOnly: true
-  }
+    httpeOnly: true,
+  },
 }));
 
 app.engine('handlebars', expressHandlebars.engine({ defaultLayout: '' }));
